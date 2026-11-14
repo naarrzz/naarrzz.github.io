@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Narz Alcaide — I build and ship apps with AI</title>
+<meta name="description" content="Narz Alcaide builds and ships apps with AI, with a cloud and security background. Case studies: Flex and Count, Time Log, and a coaching sales page.">
+<meta property="og:title" content="Narz Alcaide — I build and ship apps with AI">
+<meta property="og:description" content="AI-assisted builder with a cloud and security background. Case studies, live apps and repos.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://naarrzz.github.io/">
+<meta property="og:image" content="https://naarrzz.github.io/media/og.jpg">
+<meta name="theme-color" content="#0b0b0d" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#e9e9ee" media="(prefers-color-scheme: light)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=2">
+<script>
+  // Theme before first paint, so there's no flash.
+  try { var t = localStorage.getItem('narz-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</head>
+<body data-s="about">
+
+<div class="blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<div class="hud" aria-hidden="true">
+  <div class="chip glass" id="hud-reps"><small>reps</small><b>0</b></div>
+  <div class="chip glass" id="hud-angle"><b>0°</b></div>
+  <div class="chip glass" id="hud-pose"><small>pose</small><span></span></div>
+  <div class="hint" id="hud-hint">drag to rotate</div>
+</div>
+
+<header class="top">
+  <a class="mark glass lg" href="#about" data-go="about">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19V5l12 14V5"/><circle cx="6" cy="5" r="1.6"/><circle cx="6" cy="19" r="1.6"/><circle cx="18" cy="5" r="1.6"/><circle cx="18" cy="19" r="1.6"/></svg>
+    <span>Narz Alcaide</span>
+  </a>
+  <div class="top-r">
+    <button class="pill glass lg" id="btn-plain" type="button">Quick view</button>
+    <button class="pill glass lg icon" id="btn-theme" type="button" aria-label="Switch light or dark">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+    </button>
+  </div>
+</header>
+
+<aside class="intro">
+  <p class="eyebrow">Builder · cloud and security</p>
+  <h1>I build and ship apps <em>with AI.</em></h1>
+  <p class="lede">I decide what gets built, test it on real devices, and ship it. AI tools write much of the code. The judgment, the testing and the release are mine.</p>
+  <nav class="rail" aria-label="Sections"></nav>
+</aside>
+
+<main class="panel glass" id="panel">
+
+  <section id="about" data-pose="Bicep curl">
+    <p class="kicker">How I work</p>
+    <h2>An AI-assisted builder, and honest about it</h2>
+    <p>Every app here started as a problem I actually had: my own hours, my own training, my own coaching clients. I use AI coding tools to write most of the code. What I bring is the part they can't do for me.</p>
+    <ol class="steps">
+      <li><b>Decide.</b> I set what the product does and what it refuses to do. "12 reps" means 12 per side. Nothing leaves the device. No fake scarcity on a sales page.</li>
+      <li><b>Test on real devices.</b> iPhone 11 first, then the iOS Simulator and an Android emulator. When something breaks I record my screen, and that recording drives the next round.</li>
+      <li><b>Ship.</b> Public repos, real commit history, versioned releases, live on GitHub Pages. If it isn't live, it isn't done.</li>
+    </ol>
+    <h3>Background</h3>
+    <p>Seven months as a technical solutions consultant intern on a cloud engineering and cybersecurity team. Final-year BS Electronics Engineering student, graduating April 2027, and a licensed Electronics Technician. Also a natural bodybuilding competitor and online coach, which is where most of these app ideas come from.</p>
+    <p class="note">The figure on stage is drawn the way Flex and Count sees you: joints, bones and one elbow angle. Drag it around. Pick a project and it changes pose.</p>
+  </section>
+
+  <section id="flex" data-pose="Alternating curls">
+    <p class="kicker">Case study · live</p>
+    <h2>Flex and Count</h2>
+    <p class="tag">A school project that became a phone web app and an Android app.</p>
+    <p class="badges">
+      <a class="badge" style="--b:#FF2A2F" href="https://github.com/naarrzz/pose-estimation-bicep-curl-counter/releases/latest/download/FlexAndCount.apk"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>Download Flex &amp; Count.apk</a>
+      <a class="badge" style="--b:#111111" href="https://naarrzz.github.io/pose-estimation-bicep-curl-counter/"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/></svg>iOS / Web</a>
+      <a class="badge" style="--b:#59636E" href="https://github.com/naarrzz/pose-estimation-bicep-curl-counter"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/></svg>Repo</a>
+    </p>
+    <dl class="meta">
+      <div><dt>Tech</dt><dd>JavaScript, MediaPipe Pose Landmarker (WebAssembly), Kotlin WebView shell, node test runner</dd></div>
+      <div><dt>Tested on</dt><dd>iPhone 11, iOS Simulator, Android emulator</dd></div>
+      <div><dt>Status</dt><dd>Web build 19 · Android 1.1.0 · 13 unit tests passing</dd></div>
+    </dl>
+    <h3>Problem</h3>
+    <p>Our finals project counted right-arm bicep curls from a laptop webcam, inside a Jupyter notebook pinned to old Python libraries. It worked for the demo. Nobody could use it at the gym.</p>
+    <h3>What I built</h3>
+    <p>Version 2 runs in the phone browser. The pose model runs on the device, so nothing is recorded or uploaded. It counts standing or preacher curls on the right arm, left arm, both, or auto, from the camera or from a recorded video you can trim. A swing check marks reps that aren't strict. Sets are logged by day and export as CSV. The Android app wraps the same web app, so web updates need no new APK.</p>
+    <p>Version 1 is still in the repo, untouched, with its original commit date and both authors credited.</p>
+    <h3>How I worked with AI</h3>
+    <ul>
+      <li>I set the product rules: the goal is per side, version 1 keeps its history, and privacy stays on-device.</li>
+      <li>I tested on my iPhone 11 and sent screen recordings whenever reps were missed. Each recording became a replayable test: per-frame angles were captured, then counter settings were replayed against the clip before anything was pushed.</li>
+      <li>That loop found real problems. A seated preacher curl filmed from a low camera never reads past 150°, so the counter gained a relative-swing rule. A speed limit that looked safe was throwing out real, fast alternating curls.</li>
+      <li>The look and the logo were my calls. I refined the mark myself in Figma.</li>
+    </ul>
+    <h3>Result</h3>
+    <p>A notebook that needed a laptop is now a link you can open on any phone, plus an Android download. The Android app has only been tested on an emulator so far; a real-phone test is next.</p>
+  </section>
+
+  <section id="timelog" data-pose="Checking the time">
+    <p class="kicker">Case study · live</p>
+    <h2>Time Log</h2>
+    <p class="tag">A one-tap time audit I use every day, on iPhone, Mac and Android.</p>
+    <p class="badges">
+      <a class="badge" style="--b:#0071E3" href="https://github.com/naarrzz/time-log-android/releases/latest/download/TimeLog.apk"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>Download TimeLog.apk</a>
+      <a class="badge" style="--b:#111111" href="https://naarrzz.github.io/time-log/"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/></svg>iOS / Web</a>
+      <a class="badge" style="--b:#59636E" href="https://github.com/naarrzz/time-log"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/></svg>Repo</a>
+    </p>
+    <dl class="meta">
+      <div><dt>Tech</dt><dd>Single-file HTML, CSS and vanilla JavaScript, Firebase Auth, Cloud Firestore with per-user rules, service worker, Kotlin for the Android shell</dd></div>
+      <div><dt>Tested on</dt><dd>iPhone 11 (daily), iOS Simulator, Mac, Android phone</dd></div>
+      <div><dt>Status</dt><dd>Web v0.6.0 · Android 0.2.1 · 150+ commits · 50+ pull requests</dd></div>
+    </dl>
+    <h3>Problem</h3>
+    <p>I was juggling an internship, school, coaching, content and training, with no honest picture of where my hours went. Every tracker I tried needed too many taps to survive a normal day.</p>
+    <h3>What I built</h3>
+    <p>Tap a tile to start. Tap another to switch. If you forget, backdate with a chip. A Gaps tab walks you through unlogged time, and Week shows goals and totals. "Kasabay" tracks what runs alongside the main activity without counting the time twice. Logs sync in real time and keep working offline, or you can use it with no account at all. The Android app adds a pinned live-timer notification, a home screen widget and reminders.</p>
+    <h3>How I worked with AI</h3>
+    <ul>
+      <li>I use it daily, so features come from friction I hit myself: the newest-log-wins overlap rule, trips that group back-to-back rides, per-day goals.</li>
+      <li>Changes go through feature branches and pull requests, and I check each one on my phone after the merge.</li>
+      <li>When logs started getting flattened, the cause turned out to be an old browser tab still running old code against the same account. The fix was proven with a two-tab test on a fake backend before it touched real data.</li>
+      <li>I chose Firebase for real-time sync and offline support, and accepted the trade-off of not practicing SQL here.</li>
+    </ul>
+    <h3>Result</h3>
+    <p>In daily use since November 5, 2026. It is the app that finally showed me where my week goes.</p>
+  </section>
+
+  <section id="coaching" data-pose="Front double biceps">
+    <p class="kicker">Case study · live</p>
+    <h2>Coaching page</h2>
+    <p class="tag">A sales page with a tap-to-answer apply quiz. My freelance demo.</p>
+    <p class="badges">
+      <a class="badge" style="--b:#D93D1A" href="https://naarrzz.github.io/coaching/"><svg viewBox="0 0 24 24"><path d="M9 5h10v10M19 5 6 18"/></svg>Open page</a>
+      <a class="badge" style="--b:#59636E" href="https://github.com/naarrzz/coaching"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/></svg>Repo</a>
+    </p>
+    <dl class="meta">
+      <div><dt>Tech</dt><dd>HTML, CSS and vanilla JavaScript, GitHub Pages, ffmpeg for the video work, no backend</dd></div>
+      <div><dt>Tested on</dt><dd>iPhone width first, then desktop</dd></div>
+      <div><dt>Status</dt><dd>Live as my bio link · Filipino and English</dd></div>
+    </dl>
+    <h3>Problem</h3>
+    <p>Coaching leads came from my content and landed in my DMs with no context. I was asking every one of them the same seven questions.</p>
+    <h3>What I built</h3>
+    <p>A one-page site with a looping hero video, per-day pricing with honest anchors, an FAQ that answers the real objections, and a seven-question quiz. The quiz writes the message for the lead, copies it, and opens Instagram or Messenger with it. A toggle switches the whole page between Filipino and English.</p>
+    <h3>How I worked with AI</h3>
+    <ul>
+      <li>The positioning and the voice are mine. The copy reads the way I actually type, and I cut anything that sounded like a hard sell.</li>
+      <li>I rejected a serif typeface because it made the page look generated, and picked the type and colors myself.</li>
+      <li>Price anchors are real monthly totals, not invented discounts. There are no "limited slots".</li>
+      <li>More than twenty iterations in two days, each one reviewed at phone width before it went live.</li>
+    </ul>
+    <h3>Result</h3>
+    <p>Leads now arrive with their goal, experience and schedule already written out. It is also the page I show when someone asks what I can build for their business.</p>
+  </section>
+
+  <section id="posing" data-pose="Front double biceps">
+    <p class="kicker">Coming soon · in design</p>
+    <h2>Posing coach</h2>
+    <p class="tag">Practice mandatory poses with a ghost overlay and live joint-angle feedback.</p>
+    <p>Built on the camera and pose engine from Flex and Count. Pick a division, match the target skeleton, hold the pose against a timer, and compare your best frame with the last attempt.</p>
+    <dl class="meta">
+      <div><dt>Privacy</dt><dd>Everything stays on the device. No account, no upload.</dd></div>
+      <div><dt>Honest limit</dt><dd>A camera can check angles, not conditioning or presentation. It is a practice guide, not a judge.</dd></div>
+      <div><dt>Target</dt><dd>The January to April posing season</dd></div>
+    </dl>
+    <p class="note">The figure is cycling through a few of the poses it will teach.</p>
+  </section>
+
+  <section id="ops" data-pose="Thinking it through">
+    <p class="kicker">Coming soon · spec ready</p>
+    <h2>Supplement ops agent</h2>
+    <p class="tag">An internal-tools demo: messy CSV in, clean dashboard and a weekly report out.</p>
+    <p>Built for a made-up supplement brand. A CSV dropped into a folder is validated and cleaned, bad rows are set aside with a reason, and a dashboard updates. Three AI agents then explain the rejected rows in plain words, suggest reorders from stock and sales, and write the weekly ops report. A person approves every reorder. Nothing is sent to a supplier.</p>
+    <dl class="meta">
+      <div><dt>Stack</dt><dd>Google Sheets, Apps Script, Gemini API, n8n, an MCP server, Looker Studio</dd></div>
+      <div><dt>Data</dt><dd>Fictional brand and synthetic demo data only</dd></div>
+      <div><dt>Will ship with</dt><dd>Architecture from trigger to output, tool schemas, system prompts and a demo video</dd></div>
+    </dl>
+  </section>
+
+  <section id="experience" data-pose="At ease">
+    <p class="kicker">Experience and skills</p>
+    <h2>Technical Solutions Consultant Intern, Cybersecurity</h2>
+    <p class="tag">April to November 2026 · cloud engineering and cybersecurity team</p>
+    <ul>
+      <li>Remediated vulnerability findings on Linux and Windows servers: patching, package and runtime upgrades, and verifying each fix before the ticket closed.</li>
+      <li>Traced blocked patching to its root cause, including an expired repository certificate, a full /var from uncompressed logs, and thousands of hung package-manager processes.</li>
+      <li>Ran software audits and reporting. Scripted registry checks cut one server's audit from 57 flagged rows to 11 real removals.</li>
+      <li>Built features for an internal web portal in C# and .NET with SQL: input validation, duplicate checks and ID sequencing. Ran QA across 172 test cases.</li>
+      <li>Migrated production record IDs with a transaction-wrapped script, run as a dry run first: zero conflicts, zero orphans.</li>
+      <li>Led knowledge-transfer sessions and helped onboard newer interns.</li>
+    </ul>
+    <dl class="meta">
+      <div><dt>In numbers</dt><dd>232 logged activities · 61 tickets, 59 closed</dd></div>
+      <div><dt>Security and cloud</dt><dd>Vulnerability management, Linux (RHEL), Windows Server, Azure, patching, change tickets, audits</dd></div>
+      <div><dt>Build</dt><dd>JavaScript, HTML and CSS, Firebase, Kotlin WebView shells, C# and .NET, SQL, PowerShell, Bash, Git and GitHub Pages</dd></div>
+      <div><dt>Licenses</dt><dd>Electronics Technician (ECT), 2026 · Microsoft SC-900 in progress</dd></div>
+      <div><dt>Education</dt><dd>BS Electronics Engineering, graduating April 2027</dd></div>
+    </dl>
+  </section>
+
+  <section id="contact" data-pose="Waving">
+    <p class="kicker">Contact</p>
+    <h2>Let's build something</h2>
+    <p>I'm open to cloud, security and AI automation roles. I also build pages and small apps for coaches and small businesses, like the coaching page here.</p>
+    <p class="badges">
+      <a class="badge" style="--b:#111111" href="https://github.com/naarrzz"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/></svg>GitHub</a>
+      <a class="badge" style="--b:#0A66C2" href="https://www.linkedin.com/in/narzangeloalcaide/"><svg viewBox="0 0 24 24"><path d="M5 9.5V19M5 5.5v.1M10 19v-9.5m0 4.5c0-6 8-6 8 0v5"/></svg>LinkedIn</a>
+      <a class="badge" style="--b:#D93D1A" href="mailto:narzangeloalcaide@gmail.com"><svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Email</a>
+    </p>
+    <p class="note">narzangeloalcaide@gmail.com · Imus, Cavite, Philippines (UTC+8)</p>
+  </section>
+
+  <footer class="foot">Built by Narz Angelo Alcaide with AI tools, three.js and no framework. <a href="https://github.com/naarrzz/naarrzz.github.io">Source</a></footer>
+</main>
+
+<nav class="dock glass" aria-label="Sections"></nav>
+
+<noscript><style>.panel section{display:block!important}#stage,.hud,.dock,.blobs{display:none}body{overflow:auto!important}</style></noscript>
+<script type="module" src="app.js?v=3"></script>
+</body>
+</html>
