@@ -6,11 +6,11 @@ My portfolio: a 3D "pose lab" where a jointed figure changes pose for each proje
   <a href="https://naarrzz.github.io/"><img src="https://img.shields.io/badge/Open%20portfolio-111111?style=for-the-badge&logo=githubpages&logoColor=white" alt="Open the portfolio"></a>
 </p>
 
-I build and ship apps with AI. I decide what gets built, test it on real devices, and ship it. AI tools write much of the code.
+I turn manual work into apps, automations and AI agents. I decide what gets built, test it on real devices, and ship it.
 
 ## What's inside
 
-- **Pose lab:** a figure drawn the way [Flex and Count](https://github.com/naarrzz/pose-estimation-bicep-curl-counter) draws a body (bones, joints, one elbow angle). It curls and counts reps on the home screen, and takes a different pose per section. Drag to rotate.
+- **Pose lab:** a figure drawn the way [Flex and Count](https://github.com/naarrzz/pose-estimation-bicep-curl-counter) draws a body (bones and joints). It runs through bodybuilding poses, and each section puts it in its own 3D world: a server room, a gym, a posing stage, a warehouse. Drag to rotate.
 - **Case studies:** Flex and Count, Time Log and a coaching sales page, each with the problem, what I built, the tech, how I worked with AI, and the result.
 - **3D phone:** screen recordings of each app play on a phone that floats next to the figure.
 - **Quick view:** one plain page with everything, for when you only have a minute. It is also the fallback when WebGL isn't available.
