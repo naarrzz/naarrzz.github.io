@@ -899,9 +899,9 @@ function makeStage() {
       if (curlK > .5 && !p['wr' + k]) { const b0 = 2 * Math.acos(Math.min(1, Math.abs(J['el' + k].quaternion.w))); J['wr' + k].quaternion.identity().slerp(J['el' + k].quaternion, Math.min(1, curlK * D / Math.max(.2, b0))); }
       const fv = v3.set(0, -1, 0).applyQuaternion(J['el' + k].quaternion), bend = Math.acos(Math.max(-1, Math.min(1, -fv.y)));
       const f = peakK * Math.max(0, Math.min(1, (bend - .9) / 1.0)), side = Math.hypot(fv.x, fv.z) || 1, bi = arms[k].biceps;
-      const dx = fv.x / side * f, dz = fv.z / side * f + (1 - f), dl = Math.hypot(dx, dz) || 1, off = .028 + .02 * f;
-      bi.position.set(dx / dl * off, -.15 + .006 * f, dz / dl * off); bi.rotation.y = Math.atan2(dx, dz);
-      bi.scale.set(.066 + .003 * f, .105 - .012 * f, .078 + .02 * f);
+      const dx = fv.x / side * f, dz = fv.z / side * f + (1 - f), dl = Math.hypot(dx, dz) || 1, off = .028 + .008 * f;
+      bi.position.set(dx / dl * off, -.15 + .012 * f, dz / dl * off); bi.rotation.y = Math.atan2(dx, dz);
+      bi.scale.set(.066, .105 - .022 * f, .078 + .008 * f); // shorter, barely thicker: it contracts, it does not grow
     }
     fig.scale.setScalar(.6 + .4 * (1 - Math.pow(1 - intro, 3)));
     bellK += ((st.bells ? 1 : 0) - bellK) * (1 - Math.exp(-dt * 6));
