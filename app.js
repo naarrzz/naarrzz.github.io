@@ -234,6 +234,7 @@ function makeStage() {
     { const lat = muscle('chest', .088, .3, .09, s * .14, -.125, -.035); lat.rotation.z = -s * .3; } // lat, from the armpit down to the hip
     muscle('hp' + k, .1, .2, .112, s * .022, -.19, .028);           // quad sweep
     muscle('hp' + k, .085, .15, .09, 0, -.2, -.05);                 // hamstring
+    muscle('hp' + k, .058, .13, .075, -s * .05, -.12, .005);         // adductor, closes the gap between the thighs
     muscle('kn' + k, .062, .12, .07, 0, -.14, -.03);                // calf
     muscle('hips', .1, .1, .11, s * .085, -.03, -.05).material = mTrunk; // glute, in trunks
     for (let r = 0; r < 3; r++) muscle('chest', .046, .042, .022, s * .044, -.1 - r * .082, .1 - r * .014); // abs
@@ -899,12 +900,12 @@ function makeStage() {
       if (curlK > .5 && !p['wr' + k]) { const b0 = 2 * Math.acos(Math.min(1, Math.abs(J['el' + k].quaternion.w))); J['wr' + k].quaternion.identity().slerp(J['el' + k].quaternion, Math.min(1, curlK * D / Math.max(.2, b0))); }
       const fv = v3.set(0, -1, 0).applyQuaternion(J['el' + k].quaternion), bend = Math.acos(Math.max(-1, Math.min(1, -fv.y)));
       const f = peakK * Math.max(0, Math.min(1, (bend - .9) / 1.0)), side = Math.hypot(fv.x, fv.z) || 1, bi = arms[k].biceps;
-      const dx = fv.x / side * f, dz = fv.z / side * f + (1 - f), dl = Math.hypot(dx, dz) || 1, off = .028 - .008 * f;
+      const dx = fv.x / side * f, dz = fv.z / side * f + (1 - f), dl = Math.hypot(dx, dz) || 1, off = .028 + .002 * f;
       bi.position.set(dx / dl * off, -.15 + .012 * f, dz / dl * off); bi.rotation.y = Math.atan2(dx, dz);
-      bi.scale.set(.066, .105 - .01 * f, .078 - .012 * f); // stays low and parallel to the bone
-      const tr = arms[k].triceps, to = .03 + .014 * f, sx = k === 'L' ? 1 : -1;
+      bi.scale.set(.066, .105 - .012 * f, .078 + .004 * f); // stays low and parallel to the bone
+      const tr = arms[k].triceps, to = .03 - .008 * f, sx = k === 'L' ? 1 : -1;
       tr.position.set(-dx / dl * to + sx * .012 * (1 - f), -.16 + .015 * f, -dz / dl * to); tr.rotation.y = Math.atan2(-dx, -dz) + Math.PI;
-      tr.scale.set(.06, .11 - .02 * f, .07 + .016 * f); // shorter and deeper, so the underside is a curve
+      tr.scale.set(.06, .11 - .02 * f, .07 - .008 * f); // shorter, and smaller than the biceps in a biceps pose
     }
     fig.scale.setScalar(.6 + .4 * (1 - Math.pow(1 - intro, 3)));
     bellK += ((st.bells ? 1 : 0) - bellK) * (1 - Math.exp(-dt * 6));
