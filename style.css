@@ -150,6 +150,11 @@ h3 { font: 600 12px/1.3 var(--mono); color: var(--soft); margin: 26px 0 6px; }
 .hint { position: absolute; left: 0; top: 0; font: 500 11px var(--mono); color: var(--faint); white-space: nowrap; transition: opacity .6s; }
 .hint.gone { opacity: 0; }
 
+.zoom { position: fixed; z-index: 4; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; border-radius: 99px; padding: 3px; gap: 2px; }
+.zoom button { width: 34px; height: 30px; border: 0; border-radius: 99px; background: transparent; color: var(--ink, inherit); font: 500 19px/1 var(--display); cursor: pointer; }
+.zoom button:hover { background: rgba(128, 128, 128, .22); }
+body.plain .zoom { display: none; }
+
 /* ---------- dock (phones) ---------- */
 .dock { display: none; }
 
@@ -174,6 +179,8 @@ body.plain .panel section > * { animation: none; }
   body { overflow: hidden auto; height: auto; min-height: 100dvh; }
   #stage { height: 52svh; bottom: auto; }
   .hint { display: none; }
+  .zoom { position: absolute; left: auto; right: 12px; top: calc(46svh - 50px); bottom: auto; transform: none; }
+  .zoom button { width: 40px; height: 34px; }
   .top { left: 12px; right: 12px; top: max(10px, env(safe-area-inset-top)); }
   .mark, .pill { height: 36px; padding: 0 13px; font-size: 13px; }
   .pill.icon { width: 36px; }
