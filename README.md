@@ -34,3 +34,5 @@ python3 -m http.server 5190
 ## Other projects on this account
 
 These live in their own repos and keep their own links: [/time-log](https://naarrzz.github.io/time-log/), [/coaching](https://naarrzz.github.io/coaching/), [/pose-estimation-bicep-curl-counter](https://naarrzz.github.io/pose-estimation-bicep-curl-counter/).
+
+The 3D figure was generated with MakeHuman's Blender plugin (MPFB); its output is CC0. Trunks, hair and muscle lines are painted in a shader.
