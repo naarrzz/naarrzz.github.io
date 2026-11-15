@@ -335,10 +335,10 @@ function makeStage() {
     victory: P({ x: 0, hips: [0, 6, -4], spine: [0, -3, 6], chest: [-7, -6, 3], shR: [0, 0, -140], elR: [0, 0, -46], shL: [0, 0, 108], elL: [0, 0, 122], hpR: [0, 0, -20], knR: [6, 0, 18], anR: [0, -30, 0], hpL: [-4, 0, 12], knL: [8, 0, -22], anL: [0, 18, 0], head: [-12, -22, 0] }),
     mostMuscular: P({ y: -.05, hips: [6, 8, 0], spine: [20, 0, 0], chest: [22, -6, 0], neck: [-16, 0, 0], head: [-22, 0, 0], sh: [0, -40, 52], el: [-106, 0, -41], hp: [-24, 0, 14], kn: [34, 0, 0] }),
     arnold: P({ y: -.12, hips: [0, 104, 0], spine: [6, 24, 9], chest: [4, 30, 13], shL: [0, -6, 125], elL: [176, 0, 58], shR: [0, -11, -61], elR: [-175, 0, -67], hpL: [-40, 0, 4], knL: [60, 0, 0], hpR: [24, 0, -6], knR: [34, 0, 0], head: [8, -58, -8] }),
-    backDouble: P({ x: .02, hips: [0, 180, 3], spine: [-3, 0, -3], sh: [10, 0, 99], el: [0, 0, 117], wr: [0, 0, 24], chest: [-9, 0, 0], hpR: [8, 0, -8], knR: [10, 0, 10], hpL: [14, 0, 5], knL: [30, 0, -9], anL: [0, 14, 0] }),
+    backDouble: P({ x: .02, z: .04, hips: [-4, 180, 3], spine: [-13, 0, -3], sh: [10, 0, 99], el: [0, 0, 117], wr: [0, 0, 24], chest: [-11, 0, 0], head: [-8, 0, 0], hpR: [8, 0, -8], knR: [10, 0, 10], hpL: [14, 0, 5], knL: [30, 0, -9], anL: [0, 14, 0] }),
     latSpread: P({ z: -.06, hips: [12, -5, 4], spine: [-6, 3, -4], sh: [0, -11, 53], el: [-131, 0, -57], chest: [-15, 0, 0], hp: [-6, 0, 8], kn: [6, 0, -12], an: [0, 12, 0] }),
     sideChest: P({ hips: [0, 72, 0], spine: [0, -10, 0], chest: [-9, -22, 0], shR: [0, 37, -14], elR: [-94, 0, 8], shL: [0, -90, 27], elL: [-74, 0, 24], hpR: [-25, 0, 6], knR: [47, 0, 0], anR: [34, 0, 0], hpL: [0, 0, -6], head: [0, -40, 0] }),
-    backLat: P({ x: .02, hips: [0, 180, 3], spine: [0, 0, -3], sh: [0, -11, 53], el: [-131, 0, -57], chest: [-7, 0, 0], hpR: [8, 0, -8], knR: [10, 0, 10], hpL: [14, 0, 5], knL: [30, 0, -9], anL: [0, 14, 0] }),
+    backLat: P({ x: .02, z: .04, hips: [-4, 180, 3], spine: [-13, 0, -3], sh: [0, -11, 53], el: [-131, 0, -57], chest: [-11, 0, 0], head: [-8, 0, 0], hpR: [8, 0, -8], knR: [10, 0, 10], hpL: [14, 0, 5], knL: [30, 0, -9], anL: [0, 14, 0] }),
     absThigh: P({ hips: [0, 6, -4], spine: [5, -3, 4], sh: [0, 0, 152], el: [0, 0, 130], chest: [13, 0, 0], hpL: [-20, 0, 4], knL: [6, 0, 0], hpR: [0, 0, -5] }),
     watch: P({ shL: [-46, -62, 4], elL: [-104, 0, 0], shR: [4, 0, -18], elR: [-16, 0, 0], head: [20, 14, 0], chest: [4, 6, 0], hpR: [0, 0, -5], hpL: [0, 0, 5] }),
     onCall: P({ shR: [-24, 0, -34], elR: [-150, 0, 0], shL: [-30, -50, 6], elL: [-80, 0, 0], head: [4, -10, -10], chest: [0, -8, 0], hips: [0, -10, 0], hpL: [-14, 0, 5], knL: [22, 0, 0], hpR: [8, 0, -5] }),
@@ -829,6 +829,7 @@ function makeStage() {
   };
 
   /* --- state --- */
+  const dbgYaw = +(new URLSearchParams(location.search).get('yaw') || 0); // ?yaw=1.57 looks from the side, for tuning
   const dbgPose = new URLSearchParams(location.search).get('pose'); // ?pose=mostMuscular holds one pose, for tuning
   let st = STATES.about, stId = 'about', tState = 0, tAll = 0, reps = 0, repDown = { L: true, R: true }, phoneOn = 0, intro = 0, lastName = '', bellK = 0;
   function enter(id) {
@@ -906,7 +907,7 @@ function makeStage() {
     // camera
     const kc = 1 - Math.exp(-dt * 3.2);
     const sway = st.sway && !reduceMotion ? Math.sin(t * .5) * st.sway : 0;
-    cam.yaw += (cam.tYaw + cam.drag + sway + px * .12 - cam.yaw) * kc;
+    cam.yaw += (cam.tYaw + dbgYaw + cam.drag + sway + px * .12 - cam.yaw) * kc;
     cam.pitch += (cam.tPitch + cam.dragPitch + py * .05 - cam.pitch) * kc;
     const hasPhone = !!(byId[stId].video) && !(videos[stId] && videos[stId].failed);
     phoneOn += ((hasPhone ? 1 : 0) - phoneOn) * (1 - Math.exp(-dt * 5));
