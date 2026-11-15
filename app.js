@@ -226,7 +226,7 @@ function makeStage() {
     bone('sh' + k, 'el' + k, .062, k); bone('el' + k, 'wr' + k, .046, k); bone('wr' + k, 'hand' + k, null, k);
     bone('hp' + k, 'kn' + k, .09); bone('kn' + k, 'an' + k, .056); bone('an' + k, 'toe' + k, .036);
     muscle('sh' + k, .092, .1, .095, s * .012, -.015, 0, k);        // delt
-    muscle('sh' + k, .066, .105, .078, 0, -.15, .028, k);           // biceps
+    arms[k].biceps = muscle('sh' + k, .066, .105, .078, 0, -.15, .028, k); // biceps (it peaks when the arm flexes, see frame)
     muscle('sh' + k, .06, .11, .07, s * .012, -.16, -.03, k);       // triceps
     muscle('el' + k, .056, .1, .058, 0, -.09, .006, k);             // forearm
     muscle('hand' + k, .048, .052, .05, 0, -.01, 0, k);             // fist
@@ -331,11 +331,11 @@ function makeStage() {
   const POSE = {
     relaxed: P({ hips: [0, 0, 3], spine: [0, 0, -3], sh: [4, 0, 18], el: [-16, 0, 0], chest: [-4, 0, 0], hp: [0, 0, 5] }),
     handsHips: P({ x: -.03, hips: [0, -6, 5], spine: [-3, 4, -6], chest: [-7, 0, 0], sh: [14, 0, 46], el: [-10, 0, -112], hpL: [-4, 0, 20], knL: [8, 0, 0], hpR: [0, 0, 3], head: [-3, 0, 2] }),
-    frontDouble: P({ x: .02, z: -.06, hips: [12, 5, -4], spine: [-6, -3, 5], chest: [-16, 0, 0], sh: [4, 0, 97], el: [0, 0, 116], wr: [0, 0, 24], hpL: [-6, 0, 9], knL: [6, 0, -13], anL: [0, 12, 0], hpR: [-16, 0, -7], knR: [14, 0, 11], anR: [0, -12, 0], head: [-2, 0, 0] }),
-    victory: P({ x: 0, hips: [0, 6, -2], spine: [0, -3, -3], chest: [-7, -4, -4], shR: [0, 0, -152], elR: [0, 0, -50], shL: [0, 0, 106], elL: [0, 0, 100], wrL: [0, 0, 50], wrR: [0, 0, -45], hpR: [-10, 0, -12], knR: [8, 0, 13], anR: [0, -30, 0], hpL: [-2, 0, 9], knL: [6, 0, -16], anL: [0, 18, 0], head: [-10, 22, 0] }),
+    frontDouble: P({ peak: 1, x: .02, z: -.06, hips: [12, 5, -4], spine: [-6, -3, 5], chest: [-16, 0, 0], sh: [4, 0, 97], el: [0, 0, 116], wr: [0, 0, 24], hpL: [-6, 0, 9], knL: [6, 0, -13], anL: [0, 12, 0], hpR: [-16, 0, -7], knR: [14, 0, 11], anR: [0, -12, 0], head: [-2, 0, 0] }),
+    victory: P({ peak: 1, x: 0, hips: [0, 6, -2], spine: [0, -3, -3], chest: [-7, -4, -4], shR: [0, 0, -152], elR: [0, 0, -50], shL: [0, 0, 106], elL: [0, 0, 100], wrL: [0, 0, 50], wrR: [0, 0, -45], hpR: [-10, 0, -12], knR: [8, 0, 13], anR: [0, -30, 0], hpL: [-2, 0, 9], knL: [6, 0, -16], anL: [0, 18, 0], head: [-10, 22, 0] }),
     mostMuscular: P({ y: -.05, hips: [6, 8, 0], spine: [20, 0, 0], chest: [22, -6, 0], neck: [-16, 0, 0], head: [-22, 0, 0], sh: [0, -40, 52], el: [-106, 0, -41], hp: [-24, 0, 14], kn: [34, 0, 0] }),
-    arnold: P({ y: -.12, hips: [0, 100, 0], spine: [4, 18, 15], chest: [2, 22, 22], shL: [0, 13, 98], elL: [-164, 0, 66], shR: [0, 11, -90], elR: [-137, 0, -72], hpL: [-40, 0, 4], knL: [60, 0, 0], hpR: [24, 0, -6], knR: [34, 0, 0], head: [10, -62, -14] }),
-    backDouble: P({ x: .02, z: .04, hips: [-4, 180, 3], spine: [-13, 0, -3], sh: [10, 0, 99], el: [0, 0, 117], wr: [0, 0, 24], chest: [-11, 0, 0], head: [-8, 0, 0], hpR: [8, 0, -8], knR: [10, 0, 10], hpL: [14, 0, 5], knL: [30, 0, -9], anL: [0, 14, 0] }),
+    arnold: P({ peak: 1, curl: 45, y: -.12, hips: [0, 100, 0], spine: [4, 18, 15], chest: [2, 22, 22], shL: [0, 13, 98], elL: [-164, 0, 66], shR: [0, 11, -90], elR: [-137, 0, -72], hpL: [-40, 0, 4], knL: [60, 0, 0], hpR: [24, 0, -6], knR: [34, 0, 0], head: [10, -62, -14] }),
+    backDouble: P({ peak: 1, x: .02, z: .04, hips: [-4, 180, 3], spine: [-13, 0, -3], sh: [10, 0, 99], el: [0, 0, 117], wr: [0, 0, 24], chest: [-11, 0, 0], head: [-8, 0, 0], hpR: [8, 0, -8], knR: [10, 0, 10], hpL: [14, 0, 5], knL: [30, 0, -9], anL: [0, 14, 0] }),
     latSpread: P({ z: -.06, hips: [12, -5, 4], spine: [-6, 3, -4], sh: [0, -11, 53], el: [-131, 0, -57], chest: [-15, 0, 0], hp: [-6, 0, 8], kn: [6, 0, -12], an: [0, 12, 0] }),
     sideChest: P({ hips: [0, 72, 0], spine: [0, -10, 0], chest: [-9, -22, 0], shR: [0, 37, -14], elR: [-94, 0, 8], shL: [0, -90, 27], elL: [-74, 0, 24], hpR: [-25, 0, 6], knR: [47, 0, 0], anR: [34, 0, 0], hpL: [0, 0, -6], head: [0, -40, 0] }),
     backLat: P({ x: .02, z: .04, hips: [-4, 180, 3], spine: [-13, 0, -3], sh: [0, -11, 53], el: [-131, 0, -57], chest: [-11, 0, 0], head: [-8, 0, 0], hpR: [8, 0, -8], knR: [10, 0, 10], hpL: [14, 0, 5], knL: [30, 0, -9], anL: [0, 14, 0] }),
@@ -381,7 +381,7 @@ function makeStage() {
   const STATES = {
     about: { cam: [-.2, .08, 4.7], ...seq([['frontDouble', 'Front double biceps', 3.8], ['victory', 'Classic pose', 3.8], ['mostMuscular', 'Most muscular', 3.4], ['arnold', 'Three-quarter twist', 3.6], ['backDouble', 'Back double biceps', 3.4]]) },
     flex: { cam: [-.85, .08, 4.6], hot: 'LR', reps: true, angle: 'R', bells: true,
-      pose: t => { const p = alive('relaxed', t); p.shR = [-4, 0, -16]; p.shL = [-4, 0, 16]; p.elR = [-(6 + 136 * wave01(t, 3.2)), 0, 0]; p.elL = [-(6 + 136 * wave01(t + 1.6, 3.2)), 0, 0]; return p; } },
+      pose: t => { const p = alive('relaxed', t); p.peak = 1; p.shR = [-4, 0, -16]; p.shL = [-4, 0, 16]; p.elR = [-(6 + 136 * wave01(t, 3.2)), 0, 0]; p.elL = [-(6 + 136 * wave01(t + 1.6, 3.2)), 0, 0]; return p; } },
     timelog: { cam: [.45, .1, 4.7], ...seq([['watch', 'Checking the time', 4], ['onCall', 'On a call, walking', 3.6], ['typing', 'Back to work', 3.2]]) },
     coaching: { cam: [0, .06, 4.7], ...seq([['frontDouble', 'Front double biceps', 4.2], ['sideChest', 'Side chest', 4], ['victory', 'Classic pose', 4]]) },
     posing: { cam: [.12, .06, 4.9], sway: .22, ...seq([['frontDouble', 'Front double biceps', 3.2], ['latSpread', 'Front lat spread', 3.2], ['sideChest', 'Side chest', 3.2], ['backDouble', 'Back double biceps', 3.2], ['backLat', 'Back lat spread', 3.2], ['absThigh', 'Abs and thigh', 3.2], ['mostMuscular', 'Most muscular', 3.2]]) },
@@ -831,7 +831,7 @@ function makeStage() {
   /* --- state --- */
   const dbgYaw = +(new URLSearchParams(location.search).get('yaw') || 0); // ?yaw=1.57 looks from the side, for tuning
   const dbgPose = new URLSearchParams(location.search).get('pose'); // ?pose=mostMuscular holds one pose, for tuning
-  let st = STATES.about, stId = 'about', tState = 0, tAll = 0, reps = 0, repDown = { L: true, R: true }, phoneOn = 0, intro = 0, lastName = '', bellK = 0;
+  let st = STATES.about, stId = 'about', tState = 0, tAll = 0, reps = 0, repDown = { L: true, R: true }, phoneOn = 0, intro = 0, lastName = '', bellK = 0, peakK = 0, curlK = 0;
   function enter(id) {
     stId = STATES[id] ? id : 'about'; st = STATES[stId]; tState = 0; reps = 0; repDown = { L: true, R: true };
     hud.reps.querySelector('b').textContent = '0';
@@ -892,6 +892,17 @@ function makeStage() {
     J.hips.position.x += ((p.x || 0) - J.hips.position.x) * (1 - Math.exp(-dt * 5.5)); // weight shifts over the standing leg
     J.hips.position.z += ((p.z || 0) - J.hips.position.z) * (1 - Math.exp(-dt * 5.5)); // hips pushed back
     shadow.position.x = J.hips.position.x;
+    // biceps: as the elbow closes in a flexing pose, the muscle shortens and rises into a peak on the side the forearm folds to
+    peakK += ((p.peak || 0) - peakK) * (1 - Math.exp(-dt * 5));
+    curlK += ((p.curl || 0) - curlK) * (1 - Math.exp(-dt * 5)); // wrists curl the same way the elbow folds
+    for (const k of ['L', 'R']) {
+      if (curlK > .5 && !p['wr' + k]) { const b0 = 2 * Math.acos(Math.min(1, Math.abs(J['el' + k].quaternion.w))); J['wr' + k].quaternion.identity().slerp(J['el' + k].quaternion, Math.min(1, curlK * D / Math.max(.2, b0))); }
+      const fv = v3.set(0, -1, 0).applyQuaternion(J['el' + k].quaternion), bend = Math.acos(Math.max(-1, Math.min(1, -fv.y)));
+      const f = peakK * Math.max(0, Math.min(1, (bend - .9) / 1.0)), side = Math.hypot(fv.x, fv.z) || 1, bi = arms[k].biceps;
+      const dx = fv.x / side * f, dz = fv.z / side * f + (1 - f), dl = Math.hypot(dx, dz) || 1, off = .028 + .02 * f;
+      bi.position.set(dx / dl * off, -.15 + .006 * f, dz / dl * off); bi.rotation.y = Math.atan2(dx, dz);
+      bi.scale.set(.066 + .003 * f, .105 - .012 * f, .078 + .02 * f);
+    }
     fig.scale.setScalar(.6 + .4 * (1 - Math.pow(1 - intro, 3)));
     bellK += ((st.bells ? 1 : 0) - bellK) * (1 - Math.exp(-dt * 6));
     for (const b of bells) { b.scale.setScalar(Math.max(.001, bellK)); b.visible = bellK > .02; }
