@@ -23,6 +23,7 @@ const rail = $('.rail'), dock = $('.dock'), panel = $('#panel');
 let current = 'about';
 
 function buildNav(root, key) {
+  if (key === 'dock') { const sc = document.createElement('div'); sc.className = 'dock-scroll'; root.append(sc); root = sc; }
   const thumb = document.createElement('span'); thumb.className = 'thumb'; root.append(thumb);
   for (const s of SECTIONS) {
     const b = document.createElement('button');
@@ -204,7 +205,7 @@ function makeStage() {
     const host = to.parent === from ? from : from.parent;
     const base = to.parent === from ? new THREE.Vector3() : from.position.clone();
     const len = v.length(), q = new THREE.Quaternion().setFromUnitVectors(Y, v.clone().normalize());
-    const line = new THREE.Mesh(new THREE.CylinderGeometry(.0065, .0065, len, 8), mBone);
+    const line = new THREE.Mesh(new THREE.CylinderGeometry(.0038, .0038, len, 8), mBone);
     line.position.copy(base).addScaledVector(v, .5); line.quaternion.copy(q); line.renderOrder = 20; host.add(line);
     if (armKey) arms[armKey].bones.push(line);
     if (vol) {
@@ -250,7 +251,7 @@ function makeStage() {
   // joint dots
   for (const n of Object.keys(J)) {
     if (/^(spine|neck|hand|toe|head)/.test(n)) continue;
-    const dot = new THREE.Mesh(sphere, mJoint); dot.scale.setScalar(.018); dot.renderOrder = 21; J[n].add(dot);
+    const dot = new THREE.Mesh(sphere, mJoint); dot.scale.setScalar(.013); dot.renderOrder = 21; J[n].add(dot);
     const m = n.match(/^(sh|el|wr)([LR])$/); if (m) arms[m[2]].joints.push(dot);
   }
   // dumbbells, shown in the gym
@@ -385,7 +386,7 @@ function makeStage() {
     coaching: { cam: [0, .06, 4.7], ...seq([['frontDouble', 'Front double biceps', 4.2], ['sideChest', 'Side chest', 4], ['victory', 'Classic pose', 4]]) },
     posing: { cam: [.12, .06, 4.9], sway: .22, ...seq([['frontDouble', 'Front double biceps', 3.2], ['latSpread', 'Front lat spread', 3.2], ['sideChest', 'Side chest', 3.2], ['backDouble', 'Back double biceps', 3.2], ['backLat', 'Back lat spread', 3.2], ['absThigh', 'Abs and thigh', 3.2], ['mostMuscular', 'Most muscular', 3.2]]) },
     ops: { cam: [.4, .1, 4.8], ...seq([['thinking', 'Reading the numbers', 4.2], ['pointing', 'Flagging a low stock', 3.4]]) },
-    experience: { cam: [-.3, .1, 4.8], ...seq([['typing', 'Patching a server', 4], ['thinking', 'Finding the root cause', 3.6], ['handsHips', 'Ticket closed', 3]]) },
+    experience: { cam: [.62, .16, 4.9], ...seq([['typing', 'Patching a cloud VM', 5], ['thinking', 'Finding the root cause', 3.6], ['typing', 'Closing the ticket', 3.4]]) },
     contact: { cam: [.2, .08, 4.7], ...seq([['wave', 'Waving', 60]]) },
   };
 
@@ -731,20 +732,45 @@ function makeStage() {
     drift(w, [['row 214: unknown SKU → rejected', -1.5, 1.7, -1.6, { size: .075 }], ['reorder WHEY-2KG × 40 · approve?', 1.2, 2.8, -2.6, { size: .075, tone: 'acc' }], ['demo data', 0, 3.3, -3.6, { size: .085 }]], 1.0);
   });
 
-  // 7. Experience: a data center aisle.
-  mkWorld('experience', { floor: 0x4a5261, floorRough: .3, floorMetal: .35, floorTex: 'tile', floorRep: 26, acc: 0x5ac8fa }, w => {
-    for (let i = 0; i < 5; i++) { rack(w, -1.75, -1.0 - i * .95, Math.PI / 2 - .12, 2.15); rack(w, 1.75, -1.0 - i * .95, -Math.PI / 2 + .12, 2.15); }
-    for (let i = 0; i < 5; i++) w.B(.9, .03, .14, 0, 3.0, -.6 - i * 1.1, w.mat(0xdfeaff, { glow: 1.6 })); // aisle lights
-    for (const x of [-1.2, 1.2]) w.B(.4, .06, 6, x, 2.75, -3, w.mat(0x2a2e38, DARK)); // cable trays
-    w.B(4.4, 3.2, .2, 0, 1.6, -6.2, w.mat(0x1b1e26, { rough: .9 }));
-    // crash cart with a terminal
-    const cart = w.group(-.95, 0, -1.9, w.g, .5); w.B(.6, .04, .45, 0, .95, 0, w.mat(0x30343d, DARK), cart); w.B(.6, .04, .45, 0, .3, 0, w.mat(0x30343d, DARK), cart); for (const [x, z] of [[-.27, -.2], [.27, -.2], [-.27, .2], [.27, .2]]) w.B(.03, .95, .03, x, .475, z, w.mat(0x8b8f98, STEEL), cart);
-    w.B(.5, .32, .03, 0, 1.2, -.1, w.mat(0x0a0c10, { rough: .3 }), cart); w.B(.46, .28, .005, 0, 1.2, -.083, w.mat(0x0d2a1a, { glow: .0, rough: .5 }), cart); for (let i = 0; i < 6; i++) w.B(.1 + rnd(i, 7) * .26, .014, .003, -.21 + (.05 + rnd(i, 7) * .13), 1.3 - i * .04, -.08, w.mat(0x4dff9a, { glow: 2 }), cart);
-    w.B(.34, .015, .12, 0, .98, .1, w.mat(0x15161a), cart);
+  // 7. Experience: cloud work. The servers are VMs in the cloud, so the job is a laptop, a standing desk and a status wall.
+  mkWorld('experience', { floor: 0x5a5f6b, floorRough: .55, floorTex: 'concrete', floorRep: 9, acc: 0x5ac8fa }, w => {
+    const dark = w.mat(0x22252d, DARK), steel = w.mat(0x8b8f98, STEEL), alu = w.mat(0xb9bcc4, { rough: .3, metal: .9 });
+    w.B(11, 3.8, .2, 0, 1.9, -3.6, w.mat(0x3a4150, { rough: .95, map: 'plaster', rep: 2 }));
+    for (const x of [-2.4, 0, 2.4]) w.B(1.3, .03, .16, x, 3.3, -1.6, w.mat(0xe6efff, { glow: 1.4 }));
+    // status wall: one tile per VM, a few being patched
+    const wall = w.group(0, 2.0, -3.46); w.B(3.5, 1.7, .06, 0, 0, 0, dark, wall); w.B(3.38, 1.58, .01, 0, 0, .035, w.mat(0x0c1118, { rough: .35 }), wall);
+    const ok = w.mat(0x30d158, { glow: 1.6 }), warn = w.mat(0xffb020, { glow: 1.8 }), tile = w.mat(0x18222f, { rough: .5 });
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 7; c++) {
+      const x = -1.38 + c * .46, y = .5 - r * .36, n = r * 7 + c, patching = n % 6 === 2;
+      w.B(.4, .3, .008, x, y, .045, tile, wall); w.B(.24, .02, .004, x - .04, y + .08, .052, w.mat(0x5c6b80, { rough: .6 }), wall); w.B(.16, .02, .004, x - .08, y + .03, .052, w.mat(0x3d4a5c, { rough: .6 }), wall);
+      const led = w.S(.022, x + .14, y - .09, .055, patching ? warn : ok, wall);
+      if (patching) { const bar = w.B(.3, .022, .004, x, y - .09, .052, w.mat(0x5ac8fa, { glow: 1.6 }), wall); w.tick(t => { const k = ((t * .22 + n * .13) % 1); bar.scale.x = Math.max(.02, .3 * k); bar.position.x = x - .15 + .15 * k - .03; led.visible = Math.sin(t * 6 + n) > 0; }); }
+    }
+    w.label('cloud VMs · patch window', -1.05, 1.0, .06, { size: .07, parent: wall, tone: 'raw' });
+    // clouds, each holding a few VMs, linked down to the laptop
+    const cloudMat = w.mat(0xeaf1fb, { rough: .95 }), vm = w.mat(0x2f7fe0, { rough: .4, metal: .3 });
+    const front = w.group(0, 0, 0, w.g, -STATES.experience.cam[0]); // everything in here sits in front of the figure, whichever way the room is turned
+    const lap = new THREE.Vector3(0, 1.2, .62).applyAxisAngle(Y, -STATES.experience.cam[0]);
+    [[-1.9, 3.0, -1.9, .8], [1.8, 3.15, -2.1, .85], [.1, 3.5, -2.8, 1]].forEach(([x, y, z, sc], i) => {
+      const c = w.group(x, y, z); for (const [dx, dy, dz, r] of [[0, 0, 0, .46], [-.5, -.08, .05, .33], [.52, -.06, 0, .37], [.2, .2, -.05, .32], [-.24, .17, .04, .29]]) w.S(r, dx, dy, dz, cloudMat, c); c.scale.setScalar(sc);
+      for (let k = 0; k < 3; k++) { const b = w.B(.2, .13, .2, -.32 + k * .32, -.5, .1, vm, c); w.S(.02, -.32 + k * .32 + .06, -.5, .21, ok, c); }
+      w.tick(t => { c.position.y = y + Math.sin(t * .5 + i * 2) * .06; });
+      const A = lap.clone(), Bv = new THREE.Vector3(x, y - .45, z); w.line([A, Bv], w.lineMat(0x5ac8fa, .35));
+      const dot = w.S(.035, 0, 0, 0, w.mat(0x9fe0ff, { glow: 2.5 })); w.tick(t => { dot.position.lerpVectors(A, Bv, (t * (.4 + i * .08) + i * .3) % 1); });
+    });
+    // standing desk with the laptop, a mug and a second screen
+    w.B(1.25, .04, .6, 0, 1.02, .62, w.mat(0xb08a62, { rough: .55, map: 'wood', rep: 1 }), front);
+    for (const x of [-.52, .52]) { w.B(.06, 1.0, .08, x, .5, .62, steel, front); w.B(.08, .03, .6, x, .015, .62, steel, front); }
+    w.B(.34, .016, .23, 0, 1.048, .58, alu, front);
+    const lid = w.group(0, 1.056, .695, front); lid.rotation.x = .32; w.B(.34, .22, .01, 0, .11, 0, alu, lid); const scr = w.B(.31, .19, .004, 0, .112, -.008, w.mat(0x0d2a1a, { glow: 1.2 }), lid);
+    for (let i = 0; i < 6; i++) w.B(.07 + rnd(i, 7) * .16, .011, .003, -.13 + (.04 + rnd(i, 7) * .08), .185 - i * .028, -.012, w.mat(0x4dff9a, { glow: 2 }), lid);
+    w.C(.035, .08, .45, 1.08, .52, w.mat(0xf4f1ea, { rough: .5 }), { parent: front });
+    const mon = w.group(-.4, 1.04, .82, front); mon.rotation.y = .5; w.C(.012, .2, 0, .1, 0, steel, { parent: mon, seg: 8 }); w.C(.09, .012, 0, .006, 0, steel, { parent: mon, seg: 16 }); w.B(.5, .3, .02, 0, .33, 0, dark, mon); w.B(.46, .26, .004, 0, .33, -.013, w.mat(0x101a2a, { glow: .9 }), mon);
+    [.5, .8, .35, .65].forEach((h, i) => w.B(.06, .16 * h, .003, -.15 + i * .1, .25 + .08 * h, -.017, w.mat(i === 2 ? 0xffb020 : 0x5ac8fa, { glow: 1.6 }), mon));
     // a padlock
-    const lock = w.group(.9, 2.45, -2.4); w.B(.34, .28, .1, 0, 0, 0, w.mat(0xd9a93a, { rough: .3, metal: 1 }), lock); w.M(new THREE.TorusGeometry(.11, .028, 8, 20, Math.PI), 0, .14, 0, w.mat(0xc4c7cf, { rough: .25, metal: 1 }), lock); w.C(.03, .02, 0, -.02, .055, 0x15161a, { axis: 'z', parent: lock });
-    w.tick(t => { lock.rotation.y = Math.sin(t * .6) * .6; lock.position.y = 2.45 + Math.sin(t * .8) * .05; });
-    drift(w, [['$ sudo dnf update --security\n  15 / 15 findings fixed', -.5, 2.6, -3.2, { size: .07 }], ['ticket · closed complete', .6, 1.6, -2.6, { size: .075, tone: 'acc' }], ['BEGIN TRAN  -- dry run\nROLLBACK    -- 0 conflicts', .2, 3.2, -4.4, { size: .07 }]], 1.0);
+    const lock = w.group(1.25, 2.5, -1.6); w.B(.34, .28, .1, 0, 0, 0, w.mat(0xd9a93a, { rough: .3, metal: 1 }), lock); w.M(new THREE.TorusGeometry(.11, .028, 8, 20, Math.PI), 0, .14, 0, w.mat(0xc4c7cf, { rough: .25, metal: 1 }), lock); w.C(.03, .02, 0, -.02, .055, 0x15161a, { axis: 'z', parent: lock });
+    w.tick(t => { lock.rotation.y = Math.sin(t * .6) * .6; lock.position.y = 2.5 + Math.sin(t * .8) * .05; });
+    drift(w, [['$ sudo dnf update --security\n  15 / 15 findings fixed', -1.6, 1.5, -1.6, { size: .07 }], ['ticket · closed complete', 1.5, 1.6, -1.8, { size: .075, tone: 'acc' }], ['BEGIN TRAN  -- dry run\nROLLBACK    -- 0 conflicts', .2, 3.0, -3.2, { size: .07 }]], 1.0);
   });
 
   // 8. Contact: a quiet room, a door left open, paper planes going out.
@@ -871,9 +897,9 @@ function makeStage() {
     // counted arm(s) in red
     for (const k of ['L', 'R']) {
       const hot = (st.hot || '').includes(k);
-      for (const m of arms[k].bones) m.material = hot ? mHot : mBone;
+      for (const m of arms[k].bones) { m.material = hot ? mHot : mBone; m.scale.x = m.scale.z = hot ? 2.1 : 1; }
       for (const m of arms[k].bodies) m.material = hot ? mHotBody : mBody;
-      for (const m of arms[k].joints) { m.material = hot ? mHotJoint : mJoint; m.scale.setScalar(hot ? .03 : .018); }
+      for (const m of arms[k].joints) { m.material = hot ? mHotJoint : mJoint; m.scale.setScalar(hot ? .03 : .013); }
     }
 
     // camera
