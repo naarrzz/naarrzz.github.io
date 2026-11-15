@@ -220,6 +220,7 @@ function makeStage() {
     if (armKey) arms[armKey].bodies.push(o);
     return o;
   }
+  const abs = [], absUp = [], absBent = [];
   bone('hips', 'spine'); bone('spine', 'chest'); bone('chest', 'neck'); bone('neck', 'head');
   bone('shL', 'shR'); bone('hpL', 'hpR');
   for (const [k, s] of [['L', 1], ['R', -1]]) {
@@ -234,16 +235,20 @@ function makeStage() {
     { const lat = muscle('chest', .088, .3, .09, s * .14, -.125, -.035); lat.rotation.z = -s * .3; } // lat, from the armpit down to the hip
     muscle('hp' + k, .1, .2, .112, s * .022, -.19, .028);           // quad sweep
     muscle('hp' + k, .085, .15, .09, 0, -.2, -.05);                 // hamstring
-    muscle('hp' + k, .058, .13, .075, -s * .05, -.12, .005);         // adductor, closes the gap between the thighs
+    muscle('hp' + k, .058, .115, .075, -s * .05, -.165, .005);         // adductor, closes the gap between the thighs
     muscle('kn' + k, .062, .12, .07, 0, -.14, -.03);                // calf
     muscle('hips', .1, .1, .11, s * .085, -.03, -.05).material = mTrunk; // glute, in trunks
-    for (let r = 0; r < 3; r++) muscle('chest', .046, .042, .022, s * .044, -.1 - r * .082, .1 - r * .014); // abs
+    // abs: all three rows ride the chest; in a forward bend the lower two swap to copies on the spine and hips, so they don't sink into the waist
+    abs.push(muscle('chest', .046, .042, .022, s * .044, -.1, .1));
+    for (const m of [muscle('chest', .046, .042, .022, s * .044, -.182, .086), muscle('chest', .046, .042, .022, s * .044, -.264, .072)]) { abs.push(m); absUp.push(m); }   // lower rows when standing tall or leaning back
+    for (const m of [muscle('spine', .046, .042, .022, s * .044, .018, .088), muscle('hips', .046, .042, .022, s * .044, .058, .082)]) { abs.push(m); absBent.push(m); } // the same rows when the torso bends forward
     muscle('an' + k, .04, .03, .05, 0, -.01, .0);                    // heel
   }
   // torso: a V from the shoulders down to a narrow waist
   const vTorso = new THREE.Mesh(new THREE.CylinderGeometry(.205, .095, .5, 28), mBody); vTorso.scale.z = .62; vTorso.position.set(0, -.1, 0); vTorso.castShadow = true; J.chest.add(vTorso);
   const waist = new THREE.Mesh(new THREE.CylinderGeometry(.1, .125, .13, 24), mBody); waist.scale.z = .76; waist.position.set(0, .035, 0); waist.castShadow = true; J.hips.add(waist);
-  muscle('hips', .15, .085, .115, 0, -.045, 0).material = mTrunk;       // trunks
+  muscle('hips', .168, .095, .128, 0, -.05, 0).material = mTrunk;       // trunks
+  { const band = new THREE.Mesh(new THREE.CylinderGeometry(.132, .14, .075, 24), mTrunk); band.scale.z = .82; band.position.set(0, -.012, .004); band.castShadow = true; J.hips.add(band); } // waistband, sits over the skin
   muscle('chest', .17, .06, .08, 0, .2, -.02);                       // traps
   const neckV = new THREE.Mesh(new THREE.CylinderGeometry(.055, .07, .12, 16), mBody); neckV.position.y = .05; J.neck.add(neckV);
   muscle('head', .088, .108, .098, 0, .02, 0);
@@ -621,7 +626,7 @@ function makeStage() {
     const hr = hand(.3, .035, 0x15161a), mn = hand(.45, .024, 0x15161a), sc = hand(.5, .01, w.mat(0xff453a, { glow: .6 }));
     w.tick(t => { mn.rotation.z = -t * .35; hr.rotation.z = -t * .35 / 12 - 1; sc.rotation.z = -Math.floor(t * 2) / 60 * 6.2832 * 3; });
     // a wall planner made of the day's tiles
-    const tiles = [['Work', 0x3A7BD5], ['School', 0x7B4FD6], ['Gym', 0xC99A1E], ['Biyahe', 0x7F8A93], ['Kain', 0x6FA832], ['Scroll', 0xD94C4C], ['Tulog', 0x4F5BA6], ['Coaching', 0xD9772B], ['Content', 0xC2478E]];
+    const tiles = [['Work', 0x3A7BD5], ['School', 0x7B4FD6], ['Gym', 0xC99A1E], ['Transport', 0x7F8A93], ['Eat', 0x6FA832], ['Scroll', 0xD94C4C], ['Sleep', 0x4F5BA6], ['Coaching', 0xD9772B], ['Content', 0xC2478E]];
     const board = w.group(-2.35, 2.0, -3.47); w.B(2.0, 1.5, .04, 0, 0, 0, w.mat(0xf0ece3, { rough: .9 }), board); w.B(2.08, 1.58, .03, 0, 0, -.01, w.mat(0x6b5138, { rough: .7 }), board);
     for (let r = 0; r < 4; r++) for (let c = 0; c < 6; c++) { if (rnd(r * 6 + c, 5) < .2) continue; w.B(.27, .26, .012, -.8 + c * .32, .5 - r * .33, .03, w.mat(tiles[Math.floor(rnd(r * 6 + c, 2) * 9)][1], { rough: .8 }), board); }
     // work desk: laptop, lamp, mug, books
@@ -639,7 +644,7 @@ function makeStage() {
       const s = w.label(name, 0, 0, 0, { bg: '#' + col.toString(16).padStart(6, '0'), sans: true, weight: 700, size: .085, tone: 'raw', o: .95 });
       w.tick(t => { const a = t * .2 + i / tiles.length * 6.2832; s.position.set(Math.cos(a) * 1.9, .7 + (i * .37) % 1.9 + Math.sin(t * .9 + i) * .06, Math.sin(a) * 1.5 - .6); s.userData.e.mul = Math.min(1, Math.max(0, (.2 - s.position.z) / .8)); });
     });
-    drift(w, [['gap: 45 min unlogged', 1.3, 1.5, -2.4, { size: .08, tone: 'acc' }], ['Kasabay ng: Scroll', -1.3, 3.1, -2.6, { size: .08 }]], 1.0);
+    drift(w, [['gap: 45 min unlogged', 1.3, 1.5, -2.4, { size: .08, tone: 'acc' }], ['Alongside: Scroll', -1.3, 3.1, -2.6, { size: .08 }]], 1.0);
   });
 
   // 4. Coaching page: the photo studio from the hero clip, with the food that still fits the macros.
@@ -893,6 +898,8 @@ function makeStage() {
     J.hips.position.x += ((p.x || 0) - J.hips.position.x) * (1 - Math.exp(-dt * 5.5)); // weight shifts over the standing leg
     J.hips.position.z += ((p.z || 0) - J.hips.position.z) * (1 - Math.exp(-dt * 5.5)); // hips pushed back
     shadow.position.x = J.hips.position.x;
+    { const bent = ((p.spine ? p.spine[0] : 0) + (p.chest ? p.chest[0] : 0)) > -8; for (const a of absUp) a.visible = !bent; for (const a of absBent) a.visible = bent; }
+    { const br = reduceMotion ? 0 : Math.sin(t * 1.7); for (const a of abs) a.scale.set(.046 * (1 + .05 * br), .042 * (1 + .05 * br), .022 * (1 + .3 * br)); } // abs swell and settle with the breath, in place
     // biceps: as the elbow closes in a flexing pose, the muscle shortens and rises into a peak on the side the forearm folds to
     peakK += ((p.peak || 0) - peakK) * (1 - Math.exp(-dt * 5));
     curlK += ((p.curl || 0) - curlK) * (1 - Math.exp(-dt * 5)); // wrists curl the same way the elbow folds
