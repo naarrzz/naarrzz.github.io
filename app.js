@@ -199,7 +199,6 @@ function makeStage() {
   const Y = new THREE.Vector3(0, 1, 0);
   const sphere = new THREE.SphereGeometry(1, 24, 16);
   const arms = { L: { bones: [], joints: [], bodies: [] }, R: { bones: [], joints: [], bodies: [] } };
-  const lines = [];
   function bone(a, b, vol, armKey) {
     const from = J[a], to = J[b];
     const v = to.parent === from ? to.position.clone() : to.position.clone().sub(from.position);
@@ -207,7 +206,7 @@ function makeStage() {
     const base = to.parent === from ? new THREE.Vector3() : from.position.clone();
     const len = v.length(), q = new THREE.Quaternion().setFromUnitVectors(Y, v.clone().normalize());
     const line = new THREE.Mesh(new THREE.CylinderGeometry(.0038, .0038, len, 8), mBone);
-    line.position.copy(base).addScaledVector(v, .5); line.quaternion.copy(q); line.renderOrder = 20; host.add(line); lines.push({ line, a, b, len });
+    line.position.copy(base).addScaledVector(v, .5); line.quaternion.copy(q); line.renderOrder = 20; host.add(line);
     if (armKey) arms[armKey].bones.push(line);
     if (vol) {
       const body = new THREE.Mesh(new THREE.CapsuleGeometry(vol, Math.max(.01, len - vol * 1.2), 6, 16), mBody);
@@ -263,111 +262,6 @@ function makeStage() {
     for (const x of [-.1, .1]) { const h = new THREE.Mesh(new THREE.CylinderGeometry(.044, .044, .055, 18), mIron); h.rotation.z = Math.PI / 2; h.position.x = x; g.add(h); }
     bells.push(g);
   }
-
-
-  /* --- the human: a rigged, skinned body (made with MakeHuman's Blender plugin, CC0), driven by the joints above.
-         Until it loads, or if it fails to, the figure built from simple shapes stands in. --- */
-  let hipY = 1.0, driveHuman = null;
-  (async () => {
-    const buf = await (await fetch('models/human.glb?v=1')).arrayBuffer();
-    const dv = new DataView(buf), jsonLen = dv.getUint32(12, true), g = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 20, jsonLen))), bin = 20 + jsonLen + 8;
-    const CT = { 5120: Int8Array, 5121: Uint8Array, 5122: Int16Array, 5123: Uint16Array, 5125: Uint32Array, 5126: Float32Array }, NC = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT4: 16 };
-    const acc = i => { const a = g.accessors[i], bv = g.bufferViews[a.bufferView], T = CT[a.componentType], n = NC[a.type], off = bin + (bv.byteOffset || 0) + (a.byteOffset || 0); return { arr: new T(buf.slice(off, off + a.count * n * T.BYTES_PER_ELEMENT)), n, norm: !!a.normalized }; };
-    const attr = i => { const a = acc(i); return new THREE.BufferAttribute(a.arr, a.n, a.norm); };
-    // nodes -> bones
-    const skin = g.skins[0], isJoint = new Set(skin.joints);
-    const nodes = g.nodes.map((n, i) => { const o = isJoint.has(i) ? new THREE.Bone() : new THREE.Object3D(); o.name = n.name || ''; if (n.translation) o.position.fromArray(n.translation); if (n.rotation) o.quaternion.fromArray(n.rotation); if (n.scale) o.scale.fromArray(n.scale); return o; });
-    g.nodes.forEach((n, i) => (n.children || []).forEach(c => nodes[i].add(nodes[c])));
-    const human = new THREE.Group(); fig.add(human);
-    const meshIdx = g.nodes.findIndex(n => n.mesh !== undefined);
-    for (const r of g.scenes[g.scene || 0].nodes) if (r !== meshIdx) human.add(nodes[r]);
-    const ibm = acc(skin.inverseBindMatrices).arr, bones = skin.joints.map(j => nodes[j]);
-    const skeleton = new THREE.Skeleton(bones, bones.map((_, i) => new THREE.Matrix4().fromArray(ibm, i * 16)));
-    const prim = g.meshes[g.nodes[meshIdx].mesh].primitives[0], geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', attr(prim.attributes.POSITION)); geo.setAttribute('normal', attr(prim.attributes.NORMAL));
-    if (prim.attributes.COLOR_0 !== undefined) geo.setAttribute('color', attr(prim.attributes.COLOR_0));
-    { const j = acc(prim.attributes.JOINTS_0); geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(j.arr, 4)); } geo.setAttribute('skinWeight', attr(prim.attributes.WEIGHTS_0));
-    geo.setIndex(new THREE.BufferAttribute(acc(prim.indices).arr, 1));
-    const mSkin = new THREE.MeshStandardMaterial({ vertexColors: geo.hasAttribute('color'), color: geo.hasAttribute('color') ? 0xffffff : 0x9c6645, roughness: .4, metalness: .04 });
-    // trunks and hair are painted on from where a point sits on the resting body, so their edges stay clean in any pose
-    mSkin.color.setRGB(.82, .74, .68);
-    mSkin.onBeforeCompile = sh => {
-      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vRest;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvRest = position;');
-      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying vec3 vRest;').replace('#include <color_fragment>', `#include <color_fragment>
-        { float ax = abs(vRest.x), e = .004;
-          float tr = smoothstep(0., e, (.915 + ax * .16) - vRest.y) * smoothstep(0., e, vRest.y - (.772 + ax * .66)) * step(ax, .26);
-          // definition: soft dark lines where the abs and chest separate
-          float front = smoothstep(.02, .06, vRest.z), g = .0;
-          float inAbs = smoothstep(.925, .94, vRest.y) * smoothstep(1.1, 1.085, vRest.y) * front;
-          g = max(g, smoothstep(.007, .0, ax) * inAbs);                                                  // centre line
-          for (int i = 0; i < 3; i++) g = max(g, smoothstep(.006, .0, abs(vRest.y - (.975 + float(i) * .045) + ax * .1)) * smoothstep(.085, .06, ax) * inAbs * .9);
-          g = max(g, smoothstep(.008, .0, abs(ax - (.074 - (vRest.y - .93) * .05))) * inAbs * .7);        // outer edge of the abs
-          g = max(g, smoothstep(.009, .0, abs(vRest.y - (1.098 + ax * .22))) * smoothstep(.19, .15, ax) * smoothstep(.0, .02, ax) * front * .8); // under the chest
-          diffuseColor.rgb *= 1. - g * .42;
-          float back = .0465 - vRest.z;
-          float line = max(1.5766 - max(0., back + .03) * .9, 1.5116);
-          float hr = smoothstep(0., e, vRest.y - line) * max(step(-.082, back), step(1.588, vRest.y)) * step(ax, .12);
-          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(.014, .014, .02), tr);
-          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(.022, .016, .012), hr * .8);
-          float face = step(.095, vRest.z);
-          float ms = smoothstep(.0052, .003, abs(vRest.y - (1.4495 - ax * .14))) * step(ax, .027) * face;            // thin moustache
-          float br = smoothstep(.0042, .0022, abs(vRest.y - (1.5415 - abs(ax - .03) * .12))) * step(.011, ax) * step(ax, .05) * face; // brows
-          diffuseColor.rgb = mix(diffuseColor.rgb, vec3(.03, .022, .018), max(ms * .8, br * .75)); }`);
-    };
-    const mesh = new THREE.SkinnedMesh(geo, mSkin); mesh.castShadow = true; mesh.frustumCulled = false; human.add(mesh);
-
-    // size it so its hip joints sit where the stand-in's did
-    const B = Object.fromEntries(bones.map(b => [b.name, b]));
-    human.updateMatrixWorld(true);
-    const s0 = .95 / B.thigh_l.getWorldPosition(new THREE.Vector3()).y * fig.scale.y; human.scale.setScalar(s0);
-    human.updateMatrixWorld(true); mesh.bind(skeleton, new THREE.Matrix4());
-    const figInv = () => fig.matrixWorld.clone().invert();
-    const inv = figInv(), P = n => B[n].getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-    // move the driving joints onto the body's own joints, so the drawn skeleton matches it
-    const d = (a, b) => P(a).sub(P(b));
-    hipY = P('pelvis').y; J.hips.position.copy(P('pelvis'));
-    J.spine.position.copy(d('spine_01', 'pelvis')); J.chest.position.copy(d('spine_03', 'spine_01')); J.neck.position.copy(d('neck_01', 'spine_03')); J.head.position.copy(d('head', 'neck_01'));
-    for (const [k, m] of [['L', 'l'], ['R', 'r']]) {
-      J['sh' + k].position.copy(d('upperarm_' + m, 'spine_03')); J['el' + k].position.set(0, -d('lowerarm_' + m, 'upperarm_' + m).length(), 0); J['wr' + k].position.set(0, -d('hand_' + m, 'lowerarm_' + m).length(), 0); J['hand' + k].position.set(0, -.085, 0);
-      J['hp' + k].position.copy(d('thigh_' + m, 'pelvis')); J['kn' + k].position.set(0, -d('calf_' + m, 'thigh_' + m).length(), 0); J['an' + k].position.set(0, -d('foot_' + m, 'calf_' + m).length(), 0);
-      const f = d('ball_' + m, 'foot_' + m); J['toe' + k].position.set(0, f.y, Math.hypot(f.x, f.z));
-    }
-    for (const L of lines) { // refit the drawn bones
-      const from = J[L.a], to = J[L.b], child = to.parent === from, v = child ? to.position.clone() : to.position.clone().sub(from.position), base = child ? new THREE.Vector3() : from.position.clone();
-      L.line.position.copy(base).addScaledVector(v, .5); L.line.quaternion.setFromUnitVectors(Y, v.clone().normalize()); L.line.scale.y = v.length() / L.len;
-    }
-    // retarget: each body bone copies a joint's rotation. Limbs are first turned from the body's A-pose to the joints' straight-down rest.
-    const DOWN = new THREE.Vector3(0, -1, 0), restW = new Map(bones.map(b => [b, b.getWorldQuaternion(new THREE.Quaternion())])), restL = new Map(bones.map(b => [b, b.quaternion.clone()]));
-    const align = (bone, child, to) => new THREE.Quaternion().setFromUnitVectors(P(child).sub(P(bone)).normalize(), to);
-    const map = new Map();
-    const link = (bone, joint, A) => map.set(B[bone], { j: J[joint], pre: (A ? A.clone() : new THREE.Quaternion()).multiply(restW.get(B[bone])) });
-    link('pelvis', 'hips'); link('spine_01', 'spine'); link('spine_02', 'spine'); link('spine_03', 'chest'); link('neck_01', 'neck'); link('head', 'head');
-    for (const [k, m] of [['L', 'l'], ['R', 'r']]) {
-      link('clavicle_' + m, 'chest');
-      link('upperarm_' + m, 'sh' + k, align('upperarm_' + m, 'lowerarm_' + m, DOWN)); const fa = align('lowerarm_' + m, 'hand_' + m, DOWN); link('lowerarm_' + m, 'el' + k, fa); link('hand_' + m, 'wr' + k, fa);
-      link('thigh_' + m, 'hp' + k, align('thigh_' + m, 'calf_' + m, DOWN)); link('calf_' + m, 'kn' + k, align('calf_' + m, 'foot_' + m, DOWN));
-      link('foot_' + m, 'an' + k, align('foot_' + m, 'ball_' + m, J['toe' + k].position.clone().normalize()));
-    }
-    // fingers curl into a loose fist
-    const fingers = bones.filter(b => /^(index|middle|ring|pinky|thumb)_0\d_[lr]$/.test(b.name));
-    const curlQ = new URLSearchParams(location.search).get('curl');
-    for (const b of fingers) { const thumb = b.name.startsWith('thumb'), seg = +b.name.match(/_0(\d)_/)[1], ang = (curlQ ? +curlQ : 1) * (thumb ? [.35, .5, .6][seg - 1] : [1.25, 1.5, 1.0][seg - 1]); b.userData.curl = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), ang); }
-    const worldQ = new Map(), q1 = new THREE.Quaternion(), q2 = new THREE.Quaternion(), pv = new THREE.Vector3(), order = [];
-    human.traverse(o => { if (o.isBone) order.push(o); });
-    const pelvisParentQ = B.pelvis.parent;
-    driveHuman = () => {
-      B.pelvis.position.copy(B.pelvis.parent.worldToLocal(J.hips.getWorldPosition(pv)));
-      for (const b of order) {
-        const pq = b.parent.isBone ? worldQ.get(b.parent) : b.parent.getWorldQuaternion(q2), m = map.get(b);
-        let w = worldQ.get(b); if (!w) worldQ.set(b, w = new THREE.Quaternion());
-        if (m) { m.j.getWorldQuaternion(w).multiply(m.pre); b.quaternion.copy(q1.copy(pq).invert()).multiply(w); }
-        else { b.quaternion.copy(restL.get(b)); if (b.userData.curl) b.quaternion.multiply(b.userData.curl); w.copy(pq).multiply(b.quaternion); }
-      }
-    };
-    human.userData.fingers = fingers; window.__human = { B, fingers }; // handy when tuning poses
-    fig.traverse(o => { if (o.isMesh && [mBody, mTrunk, mHair, mHotBody].includes(o.material)) o.visible = false; });
-    for (const k of ['L', 'R']) arms[k].bodies.length = 0;
-  })().catch(e => console.warn('human model not loaded, using the simple figure', e));
 
   /* --- floor --- */
   const floor = new THREE.Group(); scene.add(floor);
@@ -993,7 +887,7 @@ function makeStage() {
     // pose
     const p = dbgPose && POSE[dbgPose] ? alive(dbgPose, t) : st.pose(t);
     applyPose(p, 1 - Math.exp(-dt * (reduceMotion ? 60 : 5.5)));
-    J.hips.position.y += (hipY + (p.y || 0) - J.hips.position.y) * (1 - Math.exp(-dt * 5.5));
+    J.hips.position.y += (1.0 + (p.y || 0) - J.hips.position.y) * (1 - Math.exp(-dt * 5.5));
     J.hips.position.x += ((p.x || 0) - J.hips.position.x) * (1 - Math.exp(-dt * 5.5)); // weight shifts over the standing leg
     shadow.position.x = J.hips.position.x;
     fig.scale.setScalar(.6 + .4 * (1 - Math.pow(1 - intro, 3)));
@@ -1049,7 +943,6 @@ function makeStage() {
     phone.visible = phoneOn > .01;
 
     fig.updateMatrixWorld(true);
-    if (driveHuman) { driveHuman(); fig.updateMatrixWorld(true); }
 
     // reps and elbow angle (same thresholds as the app: past 160 is down, under 50 is a rep)
     if (st.reps) {
