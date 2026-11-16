@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Narz Alcaide — Apps, automations and AI agents</title>
-<meta name="description" content="Narz Alcaide turns manual work into apps, automations and AI agents, with a cloud and security background. Case studies: Flex and Count, Time Log, and a coaching sales page.">
+<meta name="description" content="Narz Alcaide turns manual work into apps, automations and AI agents, with a cloud and security background. Projects: Flex and Count, Time Log, a coaching sales page and a supplement ops agent.">
 <meta property="og:title" content="Narz Alcaide — Apps, automations and AI agents">
-<meta property="og:description" content="I turn manual work into apps, automations and AI agents. Cloud and security background. Case studies, live apps and repos.">
+<meta property="og:description" content="I turn manual work into apps, automations and AI agents. Cloud and security background. Projects, live apps and repos.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://naarrzz.github.io/">
 <meta property="og:image" content="https://naarrzz.github.io/media/og.jpg">
@@ -46,7 +46,7 @@
 </header>
 
 <aside class="intro glass">
-  <p class="eyebrow">Builder · automation · cloud &amp; security</p>
+  <p class="eyebrow">builder · automation · cloud &amp; security</p>
   <h1>I turn manual work into apps, automations <em>and AI agents.</em></h1>
   <p class="lede">Built for small businesses and teams that want fewer manual steps. I decide what gets built, test it on real devices, and ship it.</p>
   <nav class="rail" aria-label="Sections"></nav>
@@ -69,7 +69,7 @@
   </section>
 
   <section id="flex" data-pose="Alternating curls">
-    <p class="kicker">Case study · live</p>
+    <p class="kicker">Project · live</p>
     <h2>Flex and Count</h2>
     <p class="tag">A school project that became a phone web app and an Android app.</p>
     <p class="badges">
@@ -99,7 +99,7 @@
   </section>
 
   <section id="timelog" data-pose="Checking the time">
-    <p class="kicker">Case study · live</p>
+    <p class="kicker">Project · live</p>
     <h2>Time Log</h2>
     <p class="tag">A one-tap time audit I use every day, on iPhone, Mac and Android.</p>
     <p class="badges">
@@ -128,7 +128,7 @@
   </section>
 
   <section id="coaching" data-pose="Front double biceps">
-    <p class="kicker">Case study · live</p>
+    <p class="kicker">Project · live</p>
     <h2>Coaching page</h2>
     <p class="tag">A sales page with a tap-to-answer apply quiz. My freelance demo.</p>
     <p class="badges">
@@ -169,15 +169,32 @@
   </section>
 
   <section id="ops" data-pose="Thinking it through">
-    <p class="kicker">Coming soon · spec ready</p>
+    <p class="kicker">Project · repo live</p>
     <h2>Supplement ops agent</h2>
-    <p class="tag">An internal-tools demo: messy CSV in, clean dashboard and a weekly report out.</p>
-    <p>Built for a made-up supplement brand. A CSV dropped into a folder is validated and cleaned, bad rows are set aside with a reason, and a dashboard updates. Three AI agents then explain the rejected rows in plain words, suggest reorders from stock and sales, and write the weekly ops report. A person approves every reorder. Nothing is sent to a supplier.</p>
+    <p class="tag">An internal-tools demo: messy CSV in, clean data, SQL insights and AI agents out.</p>
+    <p class="badges">
+      <a class="badge" style="--b:#59636E" href="https://github.com/naarrzz/supplement-ops-agent"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/></svg>Repo</a>
+      <a class="badge" style="--b:#248A3D" href="https://github.com/naarrzz/supplement-ops-agent/blob/main/docs/architecture.md"><svg viewBox="0 0 24 24"><path d="M9 5h10v10M19 5 6 18"/></svg>Architecture</a>
+    </p>
     <dl class="meta">
-      <div><dt>Stack</dt><dd>Google Sheets, Apps Script, Gemini API, n8n, an MCP server, Looker Studio</dd></div>
-      <div><dt>Data</dt><dd>Fictional brand and synthetic demo data only</dd></div>
-      <div><dt>Will ship with</dt><dd>Architecture from trigger to output, tool schemas, system prompts and a demo video</dd></div>
+      <div><dt>Tech</dt><dd>Google Apps Script, Sheets, Drive, BigQuery SQL, Gemini API with function calling and JSON output, n8n, a TypeScript MCP server, Looker Studio</dd></div>
+      <div><dt>Data</dt><dd>A fictional brand (Kalye Nutrition) and synthetic demo data only</dd></div>
+      <div><dt>Status</dt><dd>Repo public · ETL and the data steward agent running on Google · 64 tests passing</dd></div>
     </dl>
+    <h3>Problem</h3>
+    <p>A small supplement brand sells on its website, Shopee, Lazada and in two stores. Every week someone merges CSV exports by hand, fixes broken rows, guesses what to reorder and writes the report. It eats hours, and bad data quietly turns into bad orders.</p>
+    <h3>What I built</h3>
+    <p>A CSV dropped into a Drive folder is validated and cleaned in Apps Script. Bad rows (duplicate orders, unknown SKUs, prices typed as text) are set aside with a reason, and every run is logged. Clean data goes to Sheets and a BigQuery copy, where SQL views compute days of cover, weekly KPIs and margins. Three Gemini agents read it through read-only tools: a data steward explains every rejected row in plain words, an inventory analyst suggests reorders, and a report writer drafts the weekly report. An MCP server lets Claude ask the same data questions, like "what runs out in two weeks?".</p>
+    <h3>How I worked with AI</h3>
+    <ul>
+      <li>I set the rules: the model never does the math. Days of cover and order quantities are computed in code, and the agents only read, compare and explain.</li>
+      <li>Agents can't write. Every reorder suggestion is checked against the tool numbers and saved as Pending until a person approves it. Nothing is sent to a supplier.</li>
+      <li>The SQL runs twice: on BigQuery, and locally on DuckDB, where every SKU's numbers are cross-checked against the JavaScript tools. A test caught a SKU with a 35-day lead time being missed, so low stock now also means "runs out before the supplier can deliver".</li>
+      <li>Running it live, the Gemini model I planned on was closed to new keys and the next one was overloaded. The script now picks an available model, switches on errors and works in batches within Apps Script's time limit.</li>
+      <li>Secrets stay out of the repo: keys in Script Properties, a token on the Web App, and a secret scan before every commit.</li>
+    </ul>
+    <h3>Result</h3>
+    <p>On 90 days of demo data it flags 5 SKUs to reorder and 1 dead stock, and finds that paydays bring about 82% more revenue than other days. The weekly report is estimated to drop from about two hours of manual work to a few minutes. Next: the weekly agents on a schedule, the Looker Studio dashboard and a demo video.</p>
   </section>
 
   <section id="experience" data-pose="At ease">
@@ -219,6 +236,6 @@
 <nav class="dock glass" aria-label="Sections"></nav>
 
 <noscript><style>.panel section{display:block!important}#stage,.hud,.zoom,.dock,.blobs{display:none}body{overflow:auto!important}</style></noscript>
-<script type="module" src="app.js?v=27"></script>
+<script type="module" src="app.js?v=28"></script>
 </body>
 </html>

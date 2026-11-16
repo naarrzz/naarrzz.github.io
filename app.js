@@ -12,7 +12,7 @@ const SECTIONS = [
   { id: 'timelog', label: 'Time Log', short: 'Time Log', sub: 'v0.6.0', c: '#0A84FF', video: 'media/timelog.mp4' },
   { id: 'coaching', label: 'Coaching page', short: 'Coaching', sub: 'live', c: '#D93D1A', video: 'media/coaching.mp4' },
   { id: 'posing', label: 'Posing coach', short: 'Posing', sub: 'soon' },
-  { id: 'ops', label: 'Supplement ops agent', short: 'Ops agent', sub: 'soon' },
+  { id: 'ops', label: 'Supplement ops agent', short: 'Ops agent', sub: 'repo live', c: '#34C759' },
   { id: 'experience', label: 'Experience and skills', short: 'Experience', sub: 'intern, 2026' },
   { id: 'contact', label: 'Contact', short: 'Contact', sub: 'say hi' },
 ];

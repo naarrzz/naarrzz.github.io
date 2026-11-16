@@ -11,7 +11,7 @@ I turn manual work into apps, automations and AI agents. I decide what gets buil
 ## What's inside
 
 - **Pose lab:** a figure drawn the way [Flex and Count](https://github.com/naarrzz/pose-estimation-bicep-curl-counter) draws a body (bones and joints). It runs through bodybuilding poses, and each section puts it in its own 3D world: a server room, a gym, a posing stage, a warehouse. Drag to rotate.
-- **Case studies:** Flex and Count, Time Log and a coaching sales page, each with the problem, what I built, the tech, how I worked with AI, and the result.
+- **Projects:** Flex and Count, Time Log, a coaching sales page and a supplement ops agent (Apps Script, BigQuery, Gemini agents, MCP), each with the problem, what I built, the tech, how I worked with AI, and the result.
 - **3D phone:** screen recordings of each app play on a phone that floats next to the figure.
 - **Quick view:** one plain page with everything, for when you only have a minute. It is also the fallback when WebGL isn't available.
 - Light and dark, and it respects Reduce Motion.
